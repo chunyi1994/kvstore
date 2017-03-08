@@ -19,12 +19,11 @@ public:
     typedef std::weak_ptr<TcpConnection> WeakPointer;
     typedef boost::array<char, 4096> ConnBuffer;
     typedef std::function<void(Pointer)> CloseCallback;
-    typedef std::function<void(Pointer)> ReadCallback;
+    typedef std::function<void(Pointer, std::size_t)> ReadCallback;
 public:
     explicit TcpConnection(io_service& io_service);
     ~TcpConnection();
-    std::string& buf();
-    std::string read_all();
+    ConnBuffer& buf();
     void start();
     static Pointer create(boost::asio::io_service& io_service);
     tcp::socket& socket();

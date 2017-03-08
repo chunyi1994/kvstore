@@ -18,6 +18,36 @@ void StoreClient::connect(const std::string& addr,const std::string&  port) {
     boost::asio::connect(socket_, endpoint_iterator);
 }
 
+void StoreClient::use(std::size_t db) {
+    std::string msg("xxxx");
+    Len len;
+    len.us = static_cast<unsigned short> (msg.length());
+    len.us = boost::asio::detail::socket_ops::host_to_network_short(len.us);
+    msg[POS_TOTAL_LENGTH] = len.c[0];
+    msg[POS_TOTAL_LENGTH + 1] = len.c[0 + 1];
+    msg[POS_DB_ID] = static_cast<unsigned char>(db);
+    msg[POS_TYPE] = REQ_TYPE_USE;
+    boost::asio::write(socket_, boost::asio::buffer(msg));
+
+    std::vector<char> buffer(3);
+    size_t reply_length = boost::asio::read(socket_,boost::asio::buffer(buffer));
+    std::string response(buffer.data(), reply_length);
+    unsigned short s = *((unsigned short*) (response.data() + POS_TOTAL_LENGTH));
+    s = boost::asio::detail::socket_ops::network_to_host_short(s);
+    if (s <= 1 + 2) {
+        return;
+    }
+    std::vector<char> buffer2(s - 1 - 2);
+    reply_length = boost::asio::read(socket_,boost::asio::buffer(buffer2));
+    std::string retmsg{buffer2.data(), reply_length};
+    if (response[POS_TYPE] == RESP_TYPE_OK) {
+        LOG_DEBUG<<"success:"<<retmsg;
+    } else {
+        LOG_DEBUG<<"fail:"<<retmsg;
+    }
+    return;
+}
+
 std::string get_req(std::string key, std::string value) {
     std::string msg = std::string("xxxxx") + key + value;
     Len len;

@@ -27,8 +27,11 @@ void TcpServer::handle_accept(TcpConnection::Pointer conn,  const boost::system:
         conn->set_close_callback(
                     std::bind(&TcpServer::handle_close, this, std::placeholders::_1));
         conn->set_read_callback(
-                    std::bind(&TcpServer::handle_read, this,  std::placeholders::_1));
+                    std::bind(&TcpServer::handle_read, this,  std::placeholders::_1, std::placeholders::_2));
         conn->start();
+        if (new_conn_callback_) {
+            new_conn_callback_(conn);
+        }
     } else {
         LOG_ERROR<<ec.message();
     }
@@ -44,9 +47,9 @@ void TcpServer::handle_close(TcpConnection::Pointer conn) {
     }
 }
 
-void TcpServer::handle_read(TcpConnection::Pointer conn) {
+void TcpServer::handle_read(TcpConnection::Pointer conn, std::size_t bytes) {
     if (read_callback_) {
-        read_callback_(conn);
+        read_callback_(conn, bytes);
     }
 }
 
@@ -56,6 +59,10 @@ void TcpServer::set_close_callback(TcpConnection::CloseCallback cb) {
 
 void TcpServer::set_read_callback(TcpConnection::ReadCallback cb) {
     read_callback_ = std::move(cb);
+}
+
+void TcpServer::set_new_conn_callback(TcpServer::ConnectionCallback cb) {
+    new_conn_callback_ = cb;
 }
 
 

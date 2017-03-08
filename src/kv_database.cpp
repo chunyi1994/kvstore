@@ -1,68 +1,70 @@
 #include "kv_database.h"
 #include <assert.h>
+#include "logging/logger.h"
 namespace kvstore {
 
-const int DEFAULT_DB_ID = 0;
+//const int DEFAULT_DB_ID = 0;
 const int DEFAULT_DB_NUM = 10;
 
 KVDatabase::KVDatabase() :
-    maps_(DEFAULT_DB_NUM),
-    database_id_(DEFAULT_DB_ID)
+    maps_(DEFAULT_DB_NUM)
 {
 
 }
 
 KVDatabase::KVDatabase(std::size_t num) :
-    maps_(num),
-    database_id_(DEFAULT_DB_ID)
+    maps_(num)
 {
 
 }
 
-KVDatabase::KVDatabase(std::size_t num, std::size_t use_id) :
-    maps_(num),
-    database_id_(use_id)
-{
-    assert(num > use_id);
-}
-
-std::size_t KVDatabase::db_num() const {
+std::size_t KVDatabase::size() const {
     return maps_.size();
 }
 
-std::size_t KVDatabase::db_current_id() const {
-    return database_id_;
-}
-
-int KVDatabase::use_db(std::size_t id) const {
-    if (id >= db_num()) {
+int KVDatabase::clear(std::size_t id) {
+    if (id >= size()) {
+        LOG_DEBUG<<"err";
         return -1;
     }
-    database_id_ = id;
+    maps_[id].clear();
     return 0;
 }
 
-int KVDatabase::put(std::string key, std::string value) {
-    maps_[database_id_][key] = value;
+int KVDatabase::put(std::size_t id, std::string key, std::string value) {
+    if (id >= size()) {
+        LOG_DEBUG<<"err";
+        return -1;
+    }
+    maps_[id][key] = value;
     return 0;
 }
 
-int KVDatabase::get(std::string key, std::string &value) const {
-    auto iter = maps_[database_id_].find(key);
-    if (iter == maps_[database_id_].end()) {
+int KVDatabase::get(std::size_t id, std::string key, std::string &value) const {
+    if (id >= size()) {
+        LOG_DEBUG<<"err";
+        return -2;
+    }
+    auto iter = maps_[id].find(key);
+    if (iter == maps_[id].end()) {
+        LOG_DEBUG<<"err";
         return -1;
     }
     value = iter->second;
     return 0;
 }
 
-int KVDatabase::del(std::string key)
-{
-    auto iter = maps_[database_id_].find(key);
-    if (iter == maps_[database_id_].end()) {
+int KVDatabase::del(std::size_t id, std::string key) {
+    if (id >= size()) {
+        LOG_DEBUG<<"err";
+        return -2;
+    }
+    auto iter = maps_[id].find(key);
+    if (iter == maps_[id].end()) {
+        LOG_DEBUG<<"err";
         return -1;
     }
-    maps_[database_id_].erase(iter);
+    maps_[id].erase(iter);
     return 0;
 }
 

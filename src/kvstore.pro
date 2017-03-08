@@ -4,6 +4,12 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -Werror
+QMAKE_CXXFLAGS +=  -Wno-unused-parameter
+QMAKE_CXXFLAGS +=  -Wno-unused-function
+QMAKE_CXXFLAGS +=  -Wno-unused-variable
+
+
 
 LIBS += -lboost_coroutine
 LIBS += -lboost_context
@@ -23,7 +29,8 @@ SOURCES += main.cpp \
     store_client.cpp \
     cmd_recoder.cpp \
     persistence.cpp \
-    recovery.cpp
+    recovery.cpp \
+    config.cpp
 
 HEADERS += \
     logging/blocking_queue.h \
@@ -41,5 +48,8 @@ HEADERS += \
     persistence.h \
     utils.h \
     recovery.h \
-    cmd_protocol.h
+    cmd_protocol.h \
+    conn_data.h \
+    config.h \
+    test/test_config.h
 

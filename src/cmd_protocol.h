@@ -10,7 +10,7 @@ const int POS_TYPE = 0;
 const int POS_TOTAL_LENGTH = 1;
 const int POS_KEY_LENGTH = POS_TOTAL_LENGTH + 2;
 const int POS_KEY = POS_KEY_LENGTH + 2;
-
+const int POS_DB_ID = POS_TOTAL_LENGTH + 2;
 //response
 const int POS_MSG = POS_TOTAL_LENGTH + 2;
 
@@ -18,8 +18,10 @@ const int POS_MSG = POS_TOTAL_LENGTH + 2;
 const int REQ_TYPE_PUT = 0x00;
 const int REQ_TYPE_GET = 0x01;
 const int REQ_TYPE_DEL = 0x02;
+const int REQ_TYPE_USE = 0x03;
 const int RESP_TYPE_OK = 0x00;
 const int RESP_TYPE_ERR = 0x01;
+
 
 inline int get_pos_value(std::size_t key_len) {
     return POS_KEY + static_cast<int>(key_len);
@@ -55,7 +57,7 @@ static int  get_value(const std::string& str,std::size_t total_len,
 }
 
 }//namespace
-
+//协议的长度2字节采用unsigned short， 一字节采用unsigned char
 //客户端request
 
 // --------------------------------------------------------------------------------------------------------
@@ -66,6 +68,30 @@ static int  get_value(const std::string& str,std::size_t total_len,
 //请求类型
 //0x00  put
 //0x01  get
+
+//get
+// ----------------------------------------------------------------------
+// | 请求类型   |    总 长 度      |   key长度  | key正文|
+// |  1byte        |     2bytes       |   2bytes    |  变长     |
+//------------------------------------------------------------------------
+
+//put
+// ----------------------------------------------------------------------------------------
+// | 请求类型   |    总 长 度      |   key长度  | key正文 + value正文|
+// |  1byte        |     2bytes       |   2bytes    |             变 长              |
+//----------------------------------------------------------------------------------------
+
+//del
+// -----------------------------------------------------------------------
+// | 请求类型   |    总 长 度      |   key长度  | key正文|
+// |  1byte        |     2bytes       |   2bytes    |  变长     |
+//-----------------------------------------------------------------------
+
+//use
+// ----------------------------------------------------------
+// | 请求类型   |    总 长 度      |   数据库id  |
+// |  1byte        |     2bytes       |   1byte       |
+//-----------------------------------------------------------
 
 
 //服务端response、

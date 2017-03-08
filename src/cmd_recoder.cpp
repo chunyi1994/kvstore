@@ -6,7 +6,7 @@
 #include<stdio.h> //rename
 #include <logging/logger.h>
 #include "utils.h"
-
+#include "cmd_protocol.h"
 namespace kvstore {
 
 
@@ -27,14 +27,22 @@ CmdRecoder::CmdRecoder() :
 }
 
 int CmdRecoder::record(const std::string &cmd, int databaseid) {
+    int result = -1;
     assert(static_cast<std::size_t>(databaseid) <dbnum_ );
     if (static_cast<std::size_t>(databaseid) >= dbnum_) {
-        return -1;
+        return result;
     }
-    dbfiles_[databaseid]<<cmd;
-    //LOG_DEBUG<<"写入："<<cmd;
-    dbfiles_[databaseid].flush();
-    return 0;
+    int req_type = static_cast<int>(cmd[POS_TYPE]);
+    switch (req_type) {
+    case REQ_TYPE_PUT :
+    case REQ_TYPE_DEL:
+        dbfiles_[databaseid]<<cmd;
+        dbfiles_[databaseid].flush();
+        result = 1;
+    default:
+        result = 0;
+    }
+    return result;
 }
 
 

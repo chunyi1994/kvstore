@@ -12,18 +12,16 @@ class KVDatabase {
 public:
     KVDatabase();
     KVDatabase(std::size_t num);
-    KVDatabase(std::size_t num, std::size_t use_id);
 
-    std::size_t db_num() const;
-    std::size_t db_current_id() const;
-    int use_db(std::size_t id) const;
-    int put(std::string key, std::string value);
-    int get(std::string key, std::string& value) const;
-    int del(std::string key);
+    std::size_t size() const;
+
+    int clear(std::size_t id);
+    int put(std::size_t id, std::string key, std::string value);
+    int get(std::size_t id, std::string key, std::string& value) const;
+    int del(std::size_t id, std::string key);
 
 private:
     std::vector<StringMap> maps_;
-    mutable std::size_t database_id_;
 };
 
 

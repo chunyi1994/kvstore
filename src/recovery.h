@@ -10,8 +10,8 @@ public:
     int recover(StoreServer &server);
 
 private:
-    int execute_cmds(StoreServer &server, const std::vector<std::string>& cmds);
-    int read_file(StoreServer &server);
+    int execute_cmds(StoreServer &server, std::size_t db,const std::vector<std::string>& cmds);
+    int read_file(const std::string& filename, std::vector<std::string>& cmds);
 private:
 
 };

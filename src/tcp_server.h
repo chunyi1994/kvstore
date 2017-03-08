@@ -20,12 +20,12 @@ public:
     TcpServer(io_service& ioservice, std::size_t port);
     void set_close_callback(TcpConnection::CloseCallback cb);
     void set_read_callback(TcpConnection::ReadCallback cb);
-
+    void set_new_conn_callback(ConnectionCallback cb);
 private:
     void start_accept();
     void handle_accept(TcpConnection::Pointer conn,  const boost::system::error_code &ec);
     void handle_close(TcpConnection::Pointer conn);
-    void handle_read(TcpConnection::Pointer conn);
+    void handle_read(TcpConnection::Pointer conn,  std::size_t bytes_transfered);
 
 private:
     TcpServer(const TcpServer&) = delete;
@@ -37,6 +37,7 @@ private:
     std::set<TcpConnection::Pointer> conns_;
     TcpConnection::CloseCallback close_callback_;
     TcpConnection::ReadCallback read_callback_;
+    ConnectionCallback new_conn_callback_;
 };
 
 

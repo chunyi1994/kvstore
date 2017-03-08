@@ -18,6 +18,7 @@ public:
     StoreClient(boost::asio::io_service& ioservice);
     void connect(const std::string& addr, const std::string& port);
 
+    void use(std::size_t db);
     void put(std::string key, std::string value);
     void get(std::string key);
     void del(std::string key);
