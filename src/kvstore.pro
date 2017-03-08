@@ -51,5 +51,7 @@ HEADERS += \
     cmd_protocol.h \
     conn_data.h \
     config.h \
-    test/test_config.h
+    test/test_config.h \
+    transaction.h \
+    test/test_client.h
 

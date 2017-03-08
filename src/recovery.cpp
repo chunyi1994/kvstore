@@ -40,7 +40,7 @@ int Recovery::execute_cmds(StoreServer &server, std::size_t db,const std::vector
     std::string msg;
     int err;
     for (std::size_t i = 0; i < cmds.size(); ++i) {
-        err = server.execute_cmd(cmds[i], db, msg);
+        err = server.execute_db_cmd(cmds[i], db, msg);
         if (err < 0) {
             LOG_ERROR<<"第"<<i<<"个db文件命令错误";
             return err;
