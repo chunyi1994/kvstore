@@ -1,4 +1,4 @@
-# [c++]使用boost.asio写的简单内存KV数据库
+# [c++]使用boost.asio写的简单键值对缓存
 支持put，del， get三个命令。
 用use切换数据库。
 
