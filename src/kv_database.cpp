@@ -9,7 +9,6 @@ const int DEFAULT_DB_NUM = 10;
 KVDatabase::KVDatabase() :
     maps_(DEFAULT_DB_NUM)
 {
-
 }
 
 KVDatabase::KVDatabase(std::size_t num) :
