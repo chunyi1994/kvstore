@@ -5,6 +5,7 @@
 #include <string>
 namespace kvstore {
 
+    
 const int POS_TYPE = 0;
 //request
 const int POS_TOTAL_LENGTH = 1;
